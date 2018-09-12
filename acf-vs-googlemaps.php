@@ -19,10 +19,10 @@ function wiaw_this_plugin_last() {
 	$this_plugin = plugin_basename(trim($wp_path_to_this_file));
 	$active_plugins = get_option('active_plugins');
 	$this_plugin_key = array_search($this_plugin, $active_plugins);
-	# Do nothing if this is already the last plugin
-		array_splice($active_plugins, $this_plugin_key, 1);
-		array_push($active_plugins, $this_plugin);
-		update_option('active_plugins', $active_plugins);
+
+	array_splice($active_plugins, $this_plugin_key, 1);
+	array_push($active_plugins, $this_plugin);
+	update_option('active_plugins', $active_plugins);
 }
 add_action('activated_plugin', 'wiaw_this_plugin_last');
 
@@ -118,12 +118,15 @@ if( function_exists('acf_add_local_field_group') ){
 function wiaw_google_vs_acf_scripts() {
 	$apikey = get_field( 'wiaw_google_maps_api_key','option');
 	if ( !empty( $apikey)) {
-	    wp_enqueue_script('googlemaps-js', '//maps.googleapis.com/maps/api/js?v=3.exp&key='.$apikey, array(),'1.0',true);
+	    wp_enqueue_script('googlemaps-js', '//maps.googleapis.com/maps/api/js?v=3.exp&key='.$apikey, array(),'',true);
 	}
 }
 if ( function_exists('get_field')) {
 	# Is the API enabled, and a key set?
-	if ( get_field( 'wiaw_enable_google_maps_js', 'option') && !empty( get_field( 'wiaw_google_maps_api_key', 'option'))) {
+	$is_enabled = get_field( 'wiaw_enable_google_maps_js', 'option');
+	$key = get_field( 'wiaw_google_maps_api_key', 'option');
+
+	if ( $is_enabled && !empty( $key)) {
 		add_action( 'wp_enqueue_scripts', 'wiaw_google_vs_acf_scripts' );
 	}
 }
