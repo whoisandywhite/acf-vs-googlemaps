@@ -127,9 +127,21 @@ if ( function_exists('get_field')) {
 	$key = get_field( 'wiaw_google_maps_api_key', 'option');
 
 	if ( $is_enabled && !empty( $key)) {
+
+		// Enqueue maps JS for frontend
 		add_action( 'wp_enqueue_scripts', 'wiaw_google_vs_acf_scripts' );
+
+		// Include key for ACF backend
+		add_filter('acf/settings/google_api_key', function () {
+		    return $key;
+		});
+		acf_update_setting('google_api_key', $key);
 	}
 }
+function my_acf_init() {
+	$key = get_field( 'wiaw_google_maps_api_key', 'option');
+}
+
 
 
 
