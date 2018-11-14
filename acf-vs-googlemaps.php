@@ -130,16 +130,15 @@ if ( function_exists('get_field')) {
 
 		// Enqueue maps JS for frontend
 		add_action( 'wp_enqueue_scripts', 'wiaw_google_vs_acf_scripts' );
-
-		// Include key for ACF backend
-		add_filter('acf/settings/google_api_key', function () {
-		    return $key;
-		});
-		acf_update_setting('google_api_key', $key);
+		// Filter for backend
+		add_filter('acf/fields/google_map/api', 'wiaw_acf_google_maps');
 	}
-}
-function my_acf_init() {
-	$key = get_field( 'wiaw_google_maps_api_key', 'option');
+
+	// Include key for ACF backend
+	function wiaw_acf_google_maps( $api ){
+		$api['key'] = get_field( 'wiaw_google_maps_api_key','option');
+		return $api;
+	}
 }
 
 
